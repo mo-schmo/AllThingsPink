@@ -1,0 +1,28 @@
+@charset "ISO-8859-1";
+	<%@ taglib prefix "c" uri="http://java.sun.com/jsp/jstl/core" %>
+#initButton {
+	height: 100%;
+  	text-align: center;
+  	padding-top: 25%;
+/*   	border: 5px solid black; */
+ }
+/* body{
+   width: 50%; of your image
+   height: 50%;  of your image
+   background-image: url("C:\Users\hawra\Desktop\Fall 2019 Wayne State University\CSC 4710 Database\Exercise4\DBProject\WebContent\Capture.PNG");
+   margin: 0; If you want no margin
+   padding: 0; if your want to padding
+}  */
+
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+
+.login-form{
+	width: 75%;
+	height: 75%;
+	margin: 100px 0 0 0;
+}
