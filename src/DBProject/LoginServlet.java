@@ -1,5 +1,7 @@
 package DBProject;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -25,27 +27,7 @@ public class LoginServlet extends HttpServlet {
     }
     
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		String email = request.getParameter("username");
-		String password = request.getParameter("password");
-		User user = UserDAO.login(email, password);
-		
-		//========================================================================================
-		//
-		//https://www.youtube.com/watch?v=4GfAhuKNCdM - video for validating users using sessions
-		//
-		//=========================================================================================
-		if (user != null) {
-			HttpSession session = request.getSession();
-			session.setAttribute("userID", user.getUserID());
-			session.setAttribute("userName", user.getFirstName() + " " + user.getLastName());
-			RequestDispatcher dispatch = request.getRequestDispatcher("Index.jsp");
-			dispatch.forward(request, response);
-		}
-		else {
-			request.setAttribute("LoginFailed", "Login failed.");
-			RequestDispatcher dispatch = request.getRequestDispatcher("Login.jsp");
-			dispatch.forward(request, response);
-//			response.sendRedirect("Login.jsp");
-		}
+		/* String action = request.getServletPath(); */
+		Controller.callLogin(request, response);
 	}
 }

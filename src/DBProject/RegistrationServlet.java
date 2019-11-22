@@ -29,17 +29,19 @@ public class RegistrationServlet extends HttpServlet {
 		String gender = request.getParameter("gender");
 		int age = Integer.parseInt(request.getParameter("age"));
 		
-		User newUser = UserDAO.register(firstName, lastName, email, gender, age, password);
+		User newUser = Controller.register(firstName, lastName, email, gender, age, password);
 		
 		//Sending message to page and redirecting:https://stackoverflow.com/questions/14632252/servlet-redirect-to-same-page-with-error-message/14638621
 		if(newUser != null) {
 			//If successful display message and go to login.jsp
 			request.setAttribute("successMessage", "Registration successful");
+			request.setAttribute("errorMessage", null);
 			RequestDispatcher dispatch = request.getRequestDispatcher("Login.jsp");
 			dispatch.forward(request, response);
 		}
 		else {
 			//If unsuccessufl display message and go to Registration.jsp
+			request.setAttribute("successMessage", null);
 			request.setAttribute("errorMessage", "Registration unsuccessful");
 			RequestDispatcher dispatch = request.getRequestDispatcher("Registration.jsp");
 			dispatch.forward(request, response);

@@ -29,7 +29,7 @@ public class InitializeDB extends HttpServlet {
 	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		try {
-			UserDAO.init_db();
+			Controller.init_db();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

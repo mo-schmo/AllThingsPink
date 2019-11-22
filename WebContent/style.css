@@ -1,28 +1,123 @@
 @charset "ISO-8859-1";
 	<%@ taglib prefix "c" uri="http://java.sun.com/jsp/jstl/core" %>
-#initButton {
-	height: 100%;
-  	text-align: center;
-  	padding-top: 25%;
-/*   	border: 5px solid black; */
- }
-/* body{
-   width: 50%; of your image
-   height: 50%;  of your image
-   background-image: url("C:\Users\hawra\Desktop\Fall 2019 Wayne State University\CSC 4710 Database\Exercise4\DBProject\WebContent\Capture.PNG");
-   margin: 0; If you want no margin
-   padding: 0; if your want to padding
-}  */
-
-.center {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 50%;
+body{
+    margin: 0;
+    padding: 0;
+   	background: url(pink.jpeg);
+/*     background-color: #FFC0CB; */
+    background-size: cover;
+    background-position: center;
+    font-family: sans-serif;
 }
 
-.login-form{
-	width: 75%;
-	height: 75%;
-	margin: 100px 0 0 0;
+.loginbox{
+    width: 320px;
+    height: 420px;
+    background: #000;
+    color: #fff;
+    top: 50%;
+    left: 50%;
+    position: absolute;
+    transform: translate(-50%,-50%);
+    box-sizing: border-box;
+    padding: 70px 30px;
 }
+
+.avatar{
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    position: absolute;
+    top: -50px;
+    left: calc(50% - 50px);
+}
+
+h1{
+    margin: 0;
+    padding: 0 0 20px;
+    text-align: center;
+    font-size: 22px;
+}
+
+.loginbox p{
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+}
+
+.loginbox input{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.loginbox input[type="text"], input[type="password"], input[type="number"]
+{
+    border: none;
+    border-bottom: 1px solid #fff;
+    background: transparent;
+    outline: none;
+    height: 40px;
+    color: #fff;
+    font-size: 16px;
+}
+.loginbox input[type="submit"]
+{
+    border: none;
+    outline: none;
+    height: 40px;
+    background: #fb2525;
+    color: #fff;
+    font-size: 18px;
+    border-radius: 20px;
+}
+.loginbox input[type="submit"]:hover
+{
+    cursor: pointer;
+    background: #ffc107;
+    color: #000;
+}
+.loginbox a{
+    text-decoration: none;
+    font-size: 12px;
+    line-height: 20px;
+    color: darkgrey;
+}
+
+.loginbox a:hover
+{
+    color: #ffc107;
+}
+.checkboxes label {
+  display: inline-block;
+  padding-right: 10px;
+  white-space: nowrap;
+}
+.checkboxes input {
+  vertical-align: middle;
+}
+.checkboxes label span {
+  vertical-align: middle;
+}
+
+/* Index.jsp */
+.pink{
+	background: #ff3399;
+}	
+.table-hover > tbody > tr:hover > td,
+.table-hover > tbody > tr:hover > th {
+    background-color: pink;
+}
+.zoom {
+  	transition: transform .2s; /* Animation */
+  	margin: 0 auto;
+}
+.zoom:hover {
+  	transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+/* Add heart button */
+/* src: https://codepen.io/bnewton/pen/KrbLkx */
+/* https://cssninja.io/blog/post/lets-make-button */
+/* https://codepad.co/snippet/heart-button */
+
+/* End Index.jsp */

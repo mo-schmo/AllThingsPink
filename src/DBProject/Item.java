@@ -1,18 +1,47 @@
 package DBProject;
 
 public class Item {
-	private int itemID;
-	private double price;
-	private String name;
-	private String description;
+	protected int itemID;
+	protected double price;
+	protected String name;
+	protected String description;
+	protected String category;
+	protected String imageURL; //for storing images of the items
 	
-	public Item(int itemID, double price, String name, String description) {
+	public Item(int itemID, double price, String name, String description, String category) {
 		super();
 		
 		this.itemID = itemID;
 		this.price = price;
 		this.name = name;
 		this.description = description;
+		this.category = category;
+		/* this.imageURL = URL; */
+	}
+	
+	public String getImageURL() {
+		return imageURL;
+	}
+
+	public void setImageURL(String imageURL) {
+		this.imageURL = imageURL;
+	}
+
+	public Item(String name, String description, String category, double price) {
+		this.price = price;
+		this.name = name;
+		this.description = description;
+		this.category = category;
+		/* this.imageURL = URL; */
+	}
+	
+	
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 
 	public int getItemID() {
