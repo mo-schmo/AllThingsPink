@@ -117,21 +117,46 @@ public class Controller extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		/* String button = request.getParameter("addItem"); */
-		if (request.getParameter("addItem") != null){
-			addUserItem(request, response);
-		}
-		else if(request.getParameter("addFave") != null) {
-			addItemtoFave(request,response);
-		}
-		else if(request.getParameter("logout") != null) {
-			try {
-				logoutUser(request,response);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+		String action = request.getParameter("action"); 
+		
+		switch(action) {
+			case "addItem":{
+				addUserItem(request, response);
+				break;
+			}
+			case "addFave":{
+				addItemtoFave(request,response);
+				break;
+			}
+			case "sortByPrice":{
+				//List table by most expensive
+				String sortBy = request.getParameter("sortBy");
+				List<Item> itemList = null;
+				try {
+					itemList = Controller.listAllItems(sortBy);
+					session.setAttribute("itemList", itemList);
+				/* response.sendRedirect("Index.jsp"); */
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					response.sendRedirect("Index.jsp"); 
+				/* request.getRequestDispatcher("Index.jsp").forward(request,response); */
+				}
+				break;
+			}
+			case "logout":{
+				try {
+					logoutUser(request,response);
+					break;
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					break;
+				}
 			}
 		}
+		
 	}
 
 	private void logoutUser(HttpServletRequest request, HttpServletResponse response) throws SQLException, IOException, ServletException {
@@ -145,7 +170,7 @@ public class Controller extends HttpServlet {
 
 		Connection connect = null;
 		Statement statement = null;
-		int userID = Integer.parseInt(request.getParameter("userID"));
+		int userID = (int) (session.getAttribute("userID"));
 		int itemID = Integer.parseInt(request.getParameter("itemID"));
 		
 		  
@@ -178,20 +203,18 @@ public class Controller extends HttpServlet {
 			System.out.println("Item inserted into favorites...");
 			
 			System.out.println(session.getId());
-			  List<Item> itemList = null; 
-			  try { 
-				  itemList = Controller.listAllItems(); 
-			  }
-			  catch (SQLException e) { 
-				  // TODO Auto-generated catch block
-				  e.printStackTrace(); 
-			  }
+			/*
+			 * List<Item> itemList = null; try { itemList =
+			 * Controller.listAllItems("sortByCategory"); } catch (SQLException e) { // TODO
+			 * Auto-generated catch block e.printStackTrace(); }
+			 */
 			  
-			  
-			  session.setAttribute("userID", request.getParameter("userID"));
-			  session.setAttribute("userName", request.getParameter("userName"));
-			  session.setAttribute("root", request.getParameter("root"));
-			  session.setAttribute("itemList", itemList);
+			/*
+			 * session.setAttribute("userID", request.getParameter("userID"));
+			 * session.setAttribute("userName", request.getParameter("userName"));
+			 * session.setAttribute("root", request.getParameter("root"));
+			 * session.setAttribute("itemList", itemList);
+			 */
 			
 
 		} catch (SQLException se) {
@@ -254,7 +277,7 @@ public class Controller extends HttpServlet {
 
 			  List<Item> itemList = null; 
 			  try { 
-				  itemList = Controller.listAllItems(); 
+				  itemList = Controller.listAllItems("category"); 
 			  }
 			  catch (SQLException e) { 
 				  // TODO Auto-generated catch block
@@ -516,7 +539,7 @@ public class Controller extends HttpServlet {
 			/* session.setMaxInactiveInterval(5); */
 			List<Item> itemList = null;
 			try {
-				itemList = Controller.listAllItems();
+				itemList = Controller.listAllItems("category");
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -653,7 +676,7 @@ public class Controller extends HttpServlet {
 		return null;
 	}
 
-	public static List<Item> listAllItems() throws SQLException {
+	public static List<Item> listAllItems(String sortBy) throws SQLException {
 		List<Item> listItems = new ArrayList<Item>();
 		Connection connect = null;
 		Statement statement = null;
@@ -661,9 +684,13 @@ public class Controller extends HttpServlet {
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 			connect = DriverManager.getConnection(PROJDB_URL, USER, PASS);
-
+			
 			String query = "SELECT * from item";
-
+			if(sortBy.equals("category"))
+				query = "SELECT * from Item as I order by I.category";
+			else if(sortBy.equals("price"))
+				query = "SELECT * from Item as I order by I.price asc";
+			
 			statement = (Statement) connect.createStatement();
 			ResultSet resultSet = statement.executeQuery(query);
 

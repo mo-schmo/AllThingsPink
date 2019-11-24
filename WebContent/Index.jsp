@@ -80,7 +80,7 @@
 	    <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
 	        <ul class="navbar-nav ml-auto">
 	            <li class="nav-item">
-	                <a class="nav-link" href="Controller?logout=true">Logout</a>
+	                <a class="nav-link" href="Controller?action=logout">Logout</a>
 	            </li>
 	        </ul>
 	    </div>
@@ -92,7 +92,7 @@
 		<div class="card-body">
 		<!-- Uploading Files: https://www.guru99.com/jsp-file-upload-download.html -->
 		<!-- https://stackoverflow.com/questions/14723812/how-do-i-call-a-specific-java-method-on-a-click-submit-event-of-a-specific-butto -->
-		<form name="addItemForm" class="form-controls" method="post" action="Controller?userID=${userID}&userName=${userName}&root=${root}">
+		<form name="addItemForm" class="form-controls" method="post" action="Controller?action=addItem&userID=${userID}&userName=${userName}&root=${root}">
 			<label>Title</label>
 			<input class="w3-input w3-border" type="text" name="title"/>
 			
@@ -107,7 +107,7 @@
 			
 	<!-- 		<label>Upload Image</label><br>
 			<input class="form-control-file" type="file" name="image"/><br><br> -->
-			<br><input type="submit" name="addItem" class="w3-btn pink" value="Add"/>
+			<br><input type="submit" class="w3-btn pink" value="Add"/>
 		</form>
 		</div>
 	</div>
@@ -122,7 +122,7 @@
 				<div class="dropdown col-sm-2">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Category</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="Controller?price=true">Price</a>
+						<a class="dropdown-item" href="Controller?action=sortByPrice&sortBy=price">Price</a>
 						<a class="dropdown-item" href="#">Other</a>
 					</div>
 				</div>
@@ -151,7 +151,7 @@
 					<c:forEach items="${itemList}" var="item">
 						<tr <%-- data-toggle="collapse" data-parent="#itemTable" href="# ${item.itemID }" --%>>
 							<%-- <td><img class="zoom" src="${item.imageURL }" width="60" height="60"></td> --%>
-							<td><button id="likeBtn" onClick = "window.location.href= 'Controller?addFave=true&itemID=${item.itemID}&itemName=${item.name}&userID=${userID }&userName=${userName}&root=${root}'">Like</button></td>
+							<td><button id="likeBtn" onClick = "window.location.href= 'Controller?action=addFave&itemID=${item.itemID}&itemName=${item.name}'">Like</button></td>
 							<td>${item.category }</td>
 							<td>${item.name }</td>
 							<td>${item.description }</td>
@@ -184,12 +184,6 @@
 				/* Highlight Selected Item */
 	
 				/* END Heart Functionality */
-				
-				
-				function editLike(){
-					var btn = document.getElementById("likeBtn")
-					btn.value
-				}
 				
 			</script>
 			<!-- END OF JAVASCRIPT -->
