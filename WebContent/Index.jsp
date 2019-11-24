@@ -47,11 +47,12 @@
   	
 </head>
 <body style="padding-bottom: 40px;">
-<%-- 	 <%
-	 	if(session.getAttribute("userID") == null){
+	 <%
+	 	HttpSession sess = request.getSession(false);
+/* 	 	if(sess.getAttribute("userID") == null){
 			response.sendRedirect("Login.jsp");
-		} 
-	 %> --%>
+		}  */
+	 %>
 <div class="wrapper">
 	<!-- Working with navbar https://stackoverflow.com/questions/19733447/bootstrap-navbar-with-left-center-or-right-aligned-items -->
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
@@ -59,7 +60,7 @@
 	  <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collaspe2">
 		  <a class="navbar-brand" href="#">
 		  	<% 
-		  	if(session.getAttribute("root") != null){ %>
+		  	if(sess.getAttribute("root") != null){ %>
 		  			<img src="root.png" alt="logo" style="width:40px;">
 		  		<%}
 		  	%>
@@ -121,7 +122,7 @@
 				<div class="dropdown col-sm-2">
 					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Category</button>
 					<div class="dropdown-menu">
-						<a class="dropdown-item" href="#">Price</a>
+						<a class="dropdown-item" href="Controller?price=true">Price</a>
 						<a class="dropdown-item" href="#">Other</a>
 					</div>
 				</div>

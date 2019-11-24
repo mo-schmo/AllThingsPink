@@ -177,7 +177,7 @@ public class Controller extends HttpServlet {
 			ps.close();
 			System.out.println("Item inserted into favorites...");
 			
-			session = request.getSession(); 
+			System.out.println(session.getId());
 			  List<Item> itemList = null; 
 			  try { 
 				  itemList = Controller.listAllItems(); 
@@ -250,9 +250,8 @@ public class Controller extends HttpServlet {
 			statement.execute();
 			System.out.println("Item added to database...");
 			
-			
+			System.out.println(session.getId());
 
-			session = request.getSession(); 
 			  List<Item> itemList = null; 
 			  try { 
 				  itemList = Controller.listAllItems(); 
@@ -513,7 +512,8 @@ public class Controller extends HttpServlet {
 		if (user != null) {
 			session = request.getSession(true);
 			String id = session.getId();
-			session.setMaxInactiveInterval(5);
+			System.out.println(id);
+			/* session.setMaxInactiveInterval(5); */
 			List<Item> itemList = null;
 			try {
 				itemList = Controller.listAllItems();

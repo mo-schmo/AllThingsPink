@@ -35,7 +35,7 @@
 				<input type="submit" name="submit" value="Submit"></input>
 			</td>
 			<td>
-				<p><a href="Index.jsp">Cancel</a></p>
+				<p><a href="Index.jsp?<%HttpSession sess = request.getSession(false);%>">Cancel</a></p>
 			</td>
 		</tr>
 		<tr>
@@ -43,7 +43,7 @@
 				<% if (request.getAttribute("Error")!=null) {
 				 out.print(request.getAttribute("Error"));
 				 }%>
-				</td>
+			</td>
 		</tr>
 			
 	</table>
