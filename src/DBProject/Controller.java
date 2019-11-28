@@ -52,7 +52,7 @@ public class Controller extends HttpServlet {
 
 	// Create table queries
 	private static String USERS = "CREATE TABLE Users ( userID int NOT NULL, firstName varchar(50), lastName varchar(50), email varchar(50), gender varchar(50), age int, root boolean NOT NULL, password varchar(255), PRIMARY KEY (userID));";
-	private static String ITEM = "CREATE TABLE Item ( itemID int NOT NULL AUTO_INCREMENT, price decimal, name varchar(50), description varchar(255), category varchar(255), PRIMARY KEY (itemID) );";
+	private static String ITEM = "CREATE TABLE Item ( itemID int NOT NULL AUTO_INCREMENT, price decimal, name varchar(50), description varchar(255), category varchar(255), seller int NOT NULL, PRIMARY KEY (itemID), FOREIGN KEY(seller) REFERENCES Users(userID));";
 	private static String REVIEW = "CREATE TABLE Reviews ( reviewID int NOT NULL AUTO_INCREMENT, userID int NOT NULL, itemID int NOT NULL, rating varchar(10), description varchar(500), dateOfReview DATE, PRIMARY KEY (reviewID),  FOREIGN KEY (userID) REFERENCES Users(userID),FOREIGN KEY (itemID) REFERENCES Item(itemID) );";
 	private static String ITEMS_POSTED = "CREATE TABLE Posted( userID int NOT NULL, datePosted date, itemName varchar(50), PRIMARY KEY(userID,datePosted,itemName), FOREIGN KEY(userID) REFERENCES Users(userID))";
 	private static String FAVE_ITEMS = "CREATE TABLE FavoriteItems(itemID int NOT NULL, userID int NOT NULL, itemName varchar(50), PRIMARY KEY(itemID,userID), FOREIGN KEY(itemID) REFERENCES Item(itemID), FOREIGN KEY(userID) REFERENCES Users(userID))"; 
@@ -91,7 +91,7 @@ public class Controller extends HttpServlet {
 
 	// Insert into tables queries
 	private static String INSERT_USER = "INSERT INTO Users (userID, firstName, lastName, email, gender, age, root, password) VALUES(?,?,?,?,?,?,?,?);";
-	private static String INSERT_ITEM = "INSERT INTO Item (itemID, price, name, description, category) VALUES(?,?,?,?,?);";
+	private static String INSERT_ITEM = "INSERT INTO Item (itemID, price, name, description, category, seller) VALUES(?,?,?,?,?,?);";
 	private static String INSERT_REVIEWS = "INSERT INTO Reviews (reviewID, userID, itemID, rating, description, dateOfReview) VALUES(?,?,?,?,?,?);";
 	private static String INSERT_POSTED = "INSERT INTO Posted (userID,datePosted,itemName) VALUES(?,?,?);";
 	private static String INSERT_FAVORITE_ITEM = "INSERT INTO FavoriteItems(itemID,userID,itemName) VALUES(?,?,?);";
@@ -128,6 +128,10 @@ public class Controller extends HttpServlet {
 				addItemtoFave(request,response);
 				break;
 			}
+			case "removeFave":{
+				removeItemFromFave(request,response);
+				break;
+			}
 			case "sortByPrice":{
 				//List table by most expensive
 				String sortBy = request.getParameter("sortBy");
@@ -145,6 +149,19 @@ public class Controller extends HttpServlet {
 				}
 				break;
 			}
+			case "users":{
+				List<User> userList = null;
+				try {
+					userList = Controller.listAllUsers();
+					session.setAttribute("userList", userList);
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}finally {
+					response.sendRedirect("users.jsp"); 
+				}
+				break;
+			}
 			case "logout":{
 				try {
 					logoutUser(request,response);
@@ -154,6 +171,85 @@ public class Controller extends HttpServlet {
 					e.printStackTrace();
 					break;
 				}
+			}
+		}
+		
+	}
+
+	private void removeItemFromFave(HttpServletRequest request, HttpServletResponse response) {
+		// TODO Auto-generated method stub
+		Connection connect = null;
+		Statement statement = null;
+		int userID = (int) (session.getAttribute("userID"));
+		int itemID = Integer.parseInt(request.getParameter("itemID"));
+		
+		  
+		
+		String getItemName = "SELECT name FROM Item WHERE itemID = ?";
+		
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection(PROJDB_URL, USER, PASS);
+			
+			PreparedStatement ps = connect.prepareStatement(getItemName);
+			ps.setInt(1, itemID);
+			ResultSet rs = ps.executeQuery();
+			
+			//Get name of item query
+			String itemName = null;
+			if(rs.next()) {
+				itemName = rs.getString("name");
+			}
+			
+			FavoriteItems faveItem = new FavoriteItems(itemID,userID,itemName);
+			
+			//Execute INSERT_FAVORITE_ITEM query
+			ps = connect.prepareStatement("DELETE FROM FavoriteItems WHERE userID=? AND itemName=?");
+			ps.setInt(1, faveItem.getUserID());
+			ps.setString(2, faveItem.getItemName());
+			ps.execute();
+			ps.close();
+			System.out.println("Item deleted from favorites:" + faveItem.getItemName());
+			
+			System.out.println(session.getId());
+			/*
+			 * List<Item> itemList = null; try { itemList =
+			 * Controller.listAllItems("sortByCategory"); } catch (SQLException e) { // TODO
+			 * Auto-generated catch block e.printStackTrace(); }
+			 */
+			  
+			/*
+			 * session.setAttribute("userID", request.getParameter("userID"));
+			 * session.setAttribute("userName", request.getParameter("userName"));
+			 * session.setAttribute("root", request.getParameter("root"));
+			 * session.setAttribute("itemList", itemList);
+			 */
+			
+
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (statement != null)
+					statement.close();
+			} catch (SQLException se2) {
+			} // nothing we can do
+			try {
+				if (connect != null)
+					connect.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			} // end finally try
+			try {
+				response.sendRedirect("Index.jsp");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		
@@ -345,10 +441,10 @@ public class Controller extends HttpServlet {
 				drop = connect.prepareStatement("drop table if exists FavoriteItems");
 				drop.execute();
 				drop.close();
-				drop = connect.prepareStatement("drop table if exists Users");
+				drop = connect.prepareStatement("drop table if exists Item");
 				drop.execute();
 				drop.close();
-				drop = connect.prepareStatement("drop table if exists Item");
+				drop = connect.prepareStatement("drop table if exists Users");
 				drop.execute();
 				drop.close();
 				System.out.println("Dropped all tables");
@@ -408,20 +504,6 @@ public class Controller extends HttpServlet {
 				Item item[] = new Item[10];
 				Reviews review[] = new Reviews[10];
 
-				item[0] = new Item(1000, 50, "Shades", "Pink shades, pinkiest of them all", "Luxury");
-				item[1] = new Item(1001, 400, "Gucci Flipflops", "In one word, this item is very gucci", "Luxury");
-				item[2] = new Item(1002, 25, "Lip Gloss", "Like pink? This is for you.", "Beauty");
-				item[3] = new Item(1003, 100000, "Howie Bananas","This isn't your typical banana... it's pink (warning: not meant for eating)", "Food");
-				item[4] = new Item(1004, 95.48, "Peach", "This is naturally pink", "Food");
-				item[5] = new Item(1005, 5.98, "Pink Stapler", "One of kind, hand-made", "Office");
-				item[6] = new Item(1006, 12.23, "Eiffel Tower", "Pink eiffel tower", "Places");
-				item[7] = new Item(1007, 49.11, "Folders", "Pretty pink folders with flowers", "Office");
-				item[8] = new Item(1008, 48.07, "Phone Case", "Pink phone case", "Accessory");
-				item[9] = new Item(1009, 58.81, "Eye Liner", "Pretty stuff", "Beauty");
-				for (int j = 0; j < 10; j++) {
-					insertItem(connect, item[j]);
-				}
-
 				user[0] = new User(1, "Hawraa", "Banoon", "root@email.com", "Female", 20, true, "pass1234");
 				user[1] = new User(2, "Mohammed", "Hamza", "email1@email.com", "Male", 20, false, "pass1234");
 				user[2] = new User(3, "John", "Doe", "email2@email.com", "Male", 30, false, "pass1234");
@@ -436,6 +518,22 @@ public class Controller extends HttpServlet {
 				for (int i = 0; i < 10; i++) {
 					insertUser(connect, user[i]);
 				}
+				
+				item[0] = new Item(1000, 50, "Shades", "Pink shades, pinkiest of them all", "Luxury", 1);
+				item[1] = new Item(1001, 400, "Gucci Flipflops", "In one word, this item is very gucci", "Luxury", 1);
+				item[2] = new Item(1002, 25, "Lip Gloss", "Like pink? This is for you.", "Beauty", 2);
+				item[3] = new Item(1003, 100000, "Howie Bananas","This isn't your typical banana... it's pink (warning: not meant for eating)", "Food", 2);
+				item[4] = new Item(1004, 95.48, "Peach", "This is naturally pink", "Food", 2);
+				item[5] = new Item(1005, 5.98, "Pink Stapler", "One of kind, hand-made", "Office", 3);
+				item[6] = new Item(1006, 12.23, "Eiffel Tower", "Pink eiffel tower", "Places", 4);
+				item[7] = new Item(1007, 49.11, "Folders", "Pretty pink folders with flowers", "Office", 5);
+				item[8] = new Item(1008, 48.07, "Phone Case", "Pink phone case", "Accessory", 6);
+				item[9] = new Item(1009, 58.81, "Eye Liner", "Pretty stuff", "Beauty", 7);
+				for (int j = 0; j < 10; j++) {
+					insertItem(connect, item[j]);
+				}
+
+				
 
 				review[0] = new Reviews(3000, 1, 1000, "Fair", "This is good", "2019-10-12");
 				review[1] = new Reviews(3001, 2, 1001, "Fair", "This is better", "2019-10-12");
@@ -503,6 +601,7 @@ public class Controller extends HttpServlet {
 		stmt.setString(3, item.getName());
 		stmt.setString(4, item.getDescription());
 		stmt.setString(5, item.getCategory());
+		stmt.setInt(6,item.getSeller());
 		stmt.execute();
 	}
 
@@ -700,9 +799,10 @@ public class Controller extends HttpServlet {
 				String name = resultSet.getString("name");
 				String description = resultSet.getString("description");
 				String category = resultSet.getString("category");
+				int seller = resultSet.getInt("seller");
 				/* String imageURL = resultSet.getString("imageURL"); */
 
-				Item item = new Item(itemID, price, name, description, category);
+				Item item = new Item(itemID, price, name, description, category, seller);
 				listItems.add(item);
 			}
 			return listItems;
@@ -728,6 +828,53 @@ public class Controller extends HttpServlet {
 		}
 		return listItems;
 	}
+	public static List<User> listAllUsers() throws SQLException {
+		List<User> listUsers = new ArrayList<User>();
+		Connection connect = null;
+		Statement statement = null;
+
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+			connect = DriverManager.getConnection(PROJDB_URL, USER, PASS);
+			
+			String query = "SELECT userID,firstName,lastName from users";
+			
+			statement = (Statement) connect.createStatement();
+			ResultSet resultSet = statement.executeQuery(query);
+
+			while (resultSet.next()) {
+				int userID = resultSet.getInt("userID");
+				String fName = resultSet.getString("firstName");
+				String lName = resultSet.getString("lastName");
+				/* String imageURL = resultSet.getString("imageURL"); */
+
+				User user = new User(userID, fName, lName);
+				listUsers.add(user);
+			}
+			return listUsers;
+		} catch (SQLException se) {
+			// Handle errors for JDBC
+			se.printStackTrace();
+		} catch (Exception e) {
+			// Handle errors for Class.forName
+			e.printStackTrace();
+		} finally {
+			// finally block used to close resources
+			try {
+				if (statement != null)
+					statement.close();
+			} catch (SQLException se2) {
+			} // nothing we can do
+			try {
+				if (connect != null)
+					connect.close();
+			} catch (SQLException se) {
+				se.printStackTrace();
+			} // end finally try
+		}
+		return listUsers;
+	}
+	
 	
     public static Connection getConnection() throws SQLException {
 		return DriverManager

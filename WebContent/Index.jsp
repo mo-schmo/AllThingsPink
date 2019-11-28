@@ -25,25 +25,20 @@
   	
   	<!-- Like Button -->
   	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
   	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   	
-<!--   	<style>
-  	.pink{
-  		background: #ff3399;
-  	}
-  	
-  	.table-hover > tbody > tr:hover > td,
-	.table-hover > tbody > tr:hover > th {
-    	background-color: pink;
-	}
-  	.zoom {
-  		transition: transform .2s; /* Animation */
-  		margin: 0 auto;
-	}
-	.zoom:hover {
-  		transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
-	}
-  	</style> -->
+  	<style>
+		.fa {
+  			font-size: 20px;
+  			cursor: pointer;
+  			user-select: none;
+		}
+
+		.fa:hover {
+ 			color: #F999D7;
+		}
+  	</style>
   	
 </head>
 <body style="padding-bottom: 40px;">
@@ -54,6 +49,53 @@
 		}  */
 	 %>
 <div class="wrapper">
+	<!-- Begin Side-Bar -->
+	<nav class="navbar navbar-light navbar-static bg-faded" role="navigation">
+    	<button class="navbar-toggler" id="navbarSideButton" type="button">
+      		&#9776;
+    	</button>
+		<ul class="navbar-side" id="navbarSide">
+ 			<li class="navbar-side-item">
+ 				<i style="margin-left:5px;" class="fa fa-users"></i>
+    			<a onClick="" class="side-link">View All Users</a>
+  			</li>
+  			 <li class="navbar-side-item">
+    			<a href="#" class="side-link">Part 3.2</a>
+  			</li>
+  			<li class="navbar-side-item">
+    			<a href="#" class="side-link">Part 3.3</a>
+  			</li>
+  			<li class="navbar-side-item">
+    			<a href="#" class="side-link">Part 3.4</a>
+  			</li>
+  			<li class="navbar-side-item">
+    			<a href="#" class="side-link">Part 3.4</a>
+  			</li>
+		</ul>
+		<div class="overlay"></div>
+	</nav>
+	
+	<script>
+
+	$( document ).ready(function() {
+
+	  // Open navbarSide when button is clicked
+	  $('#navbarSideButton').on('click', function() {
+	    $('#navbarSide').addClass('reveal');
+	    $('.overlay').show();
+	  });
+
+	  // Close navbarSide when the outside of menu is clicked
+	  $('.overlay').on('click', function(){
+	    $('#navbarSide').removeClass('reveal');
+	    $('.overlay').hide();
+	  });
+
+	});
+	 </script>
+	 <!-- End side-bar -->
+	
+	
 	<!-- Working with navbar https://stackoverflow.com/questions/19733447/bootstrap-navbar-with-left-center-or-right-aligned-items -->
 	<nav class="navbar navbar-expand-sm bg-dark navbar-dark fixed-bottom">
 	  <!-- Brand/logo -->
@@ -151,7 +193,10 @@
 					<c:forEach items="${itemList}" var="item">
 						<tr <%-- data-toggle="collapse" data-parent="#itemTable" href="# ${item.itemID }" --%>>
 							<%-- <td><img class="zoom" src="${item.imageURL }" width="60" height="60"></td> --%>
-							<td><button id="likeBtn" onClick = "window.location.href= 'Controller?action=addFave&itemID=${item.itemID}&itemName=${item.name}'">Like</button></td>
+							<td style='white-space: nowrap; display: inline-block;'>
+								<button onclick="window.location.href= 'Controller?action=addFave&itemID=${item.itemID}&itemName=${item.name}'" class="btn fa fa-thumbs-up"></button>
+								<button onclick="window.location.href= 'Controller?action=removeFave&itemID=${item.itemID}&itemName=${item.name}'" class="btn fa fa-thumbs-down"></button>
+							</td>
 							<td>${item.category }</td>
 							<td>${item.name }</td>
 							<td>${item.description }</td>
@@ -182,7 +227,9 @@
 				/* End Search Functionality */
 				
 				/* Highlight Selected Item */
-	
+				function changeLike(x) {
+  					x.classList.toggle("fa-thumbs-down");
+				}
 				/* END Heart Functionality */
 				
 			</script>

@@ -7,8 +7,9 @@ public class Item {
 	protected String description;
 	protected String category;
 	protected String imageURL; //for storing images of the items
+	protected int seller;
 	
-	public Item(int itemID, double price, String name, String description, String category) {
+	public Item(int itemID, double price, String name, String description, String category, int seller) {
 		super();
 		
 		this.itemID = itemID;
@@ -17,8 +18,17 @@ public class Item {
 		this.description = description;
 		this.category = category;
 		/* this.imageURL = URL; */
+		this.seller = seller;
 	}
 	
+	public int getSeller() {
+		return seller;
+	}
+
+	public void setSeller(int seller) {
+		this.seller = seller;
+	}
+
 	public String getImageURL() {
 		return imageURL;
 	}

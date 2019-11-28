@@ -26,6 +26,14 @@ public class User {
 	}
 
 
+	public User(int userID, String fName, String lName) {
+		// TODO Auto-generated constructor stub
+		this.userID = userID;
+		this.firstName = fName;
+		this.lastName = lName;
+	}
+
+
 	public int getAge() {
 		return age;
 	}
