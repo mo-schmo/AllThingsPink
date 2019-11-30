@@ -18,6 +18,14 @@ public class Reviews {
 		this.description = description;
 		this.dateOfReview = dateOfReview;
 	}
+	public Reviews(int userID, int itemID, String rating, String description) {
+		super();
+		
+		this.userID = userID;
+		this.itemID = itemID;
+		this.rating = rating;
+		this.description = description;
+	}
 
 	public String getDescription() {
 		return description;

@@ -56,11 +56,12 @@
     	</button>
 		<ul class="navbar-side" id="navbarSide">
  			<li class="navbar-side-item">
- 				<i style="margin-left:5px;" class="fa fa-users"></i>
-    			<a onClick="" class="side-link">View All Users</a>
+ 				<i style="margin-left:5px; color:#f9d2f0;" class="fa fa-home fa-2x"></i>
+    			<a href="#">Home</a>
   			</li>
   			 <li class="navbar-side-item">
-    			<a href="#" class="side-link">Part 3.2</a>
+ 				<i style="margin-left:5px; color:#f9d2f0" class="fa fa-users fa-2x"></i>
+    			<a href="Controller?action=users">View All Users</a>
   			</li>
   			<li class="navbar-side-item">
     			<a href="#" class="side-link">Part 3.3</a>

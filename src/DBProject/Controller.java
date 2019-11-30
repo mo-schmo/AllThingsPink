@@ -30,6 +30,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 //import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Random;
 
@@ -132,6 +133,23 @@ public class Controller extends HttpServlet {
 				removeItemFromFave(request,response);
 				break;
 			}
+			case "leaveReview":{
+				try {
+					System.out.println("Calling leaveReview function...");
+					leaveReview(request,response);
+				} 
+				
+				catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					session.setAttribute("reviewTrigger", true);
+				}
+				finally {
+					System.out.println("Redirecting to Index.jsp...");
+					response.sendRedirect("Index.jsp");
+				}
+				break;
+			}
 			case "sortByPrice":{
 				//List table by most expensive
 				String sortBy = request.getParameter("sortBy");
@@ -172,6 +190,45 @@ public class Controller extends HttpServlet {
 					break;
 				}
 			}
+		}
+		
+	}
+
+	private void leaveReview(HttpServletRequest request, HttpServletResponse response) throws SQLException {
+		try {
+			Class.forName(JDBC_DRIVER);
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		PreparedStatement ps = null;
+		Connection connection = getConnection();
+		
+		String description = request.getParameter("description");
+		String rating = request.getParameter("rating");
+		int itemID = Integer.parseInt(request.getParameter("itemID"));
+		int userID = (int) session.getAttribute("userID");
+		
+		//Get current date and convert to sql 
+		Calendar dt = Calendar.getInstance();
+		java.sql.Date dateOfReview = new java.sql.Date(dt.getTime().getTime());
+		
+		Reviews review = new Reviews(userID,itemID,rating,description);
+		
+		String insertQuery = "INSERT INTO Reviews (userID,itemID,rating,description,dateOfReview) VALUES (?,?,?,?,?)";
+		ps = connection.prepareStatement(insertQuery);
+		ps.setInt(1, review.getUserID());
+		ps.setInt(2, review.getItemID());
+		ps.setString(3, review.getRating());
+		ps.setString(4, review.getDescription());
+		ps.setDate(5, dateOfReview);
+		if(ps.executeUpdate() > 0) {
+			System.out.println("Review added sucessfully...");
+			session.setAttribute("reviewTrigger", false);
+		}
+		else {
+			System.out.println("Review was not added...");
 		}
 		
 	}
@@ -878,7 +935,7 @@ public class Controller extends HttpServlet {
 	
     public static Connection getConnection() throws SQLException {
 		return DriverManager
-                .getConnection("jdbc:mysql://localhost:3306/testdb?" + "user=john&password=pass1234");
+                .getConnection("jdbc:mysql://localhost:3306/projectdb?" + "user=john&password=pass1234");
 	}
 
 }
