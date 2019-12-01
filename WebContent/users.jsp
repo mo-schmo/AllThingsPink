@@ -71,11 +71,12 @@ ResultSet resultSet = null;
 	    	</button>
 			<ul class="navbar-side" id="navbarSide">
 	 			<li class="navbar-side-item">
-	 				<i style="margin-left:5px;" class="fa fa-users"></i>
-	    			<a href="#" class="side-link">View All Users</a>
+	 				<i style="margin-left:5px; color:#f9d2f0;" class="fa fa-home fa-2x"></i>
+	    			<a href="Index.jsp">Home</a>
 	  			</li>
 	  			 <li class="navbar-side-item">
-	    			<a href="#" class="side-link">Part 3.2</a>
+	 				<i style="margin-left:5px; color:#f9d2f0" class="fa fa-users fa-2x"></i>
+	    			<a href="Controller?action=users">View All Users</a>
 	  			</li>
 	  			<li class="navbar-side-item">
 	    			<a href="#" class="side-link">Part 3.3</a>
@@ -147,20 +148,33 @@ ResultSet resultSet = null;
 		<div class="card-body">
 			<!-- Search Bar and Category Button -->
 			<div class="row">
-				<div class="dropdown col-sm-2">
-					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">All</button>
-					<div class="dropdown-menu">
-						<a class="dropdown-item" href="Controller?action=sortByPrice&sortBy=price">Price</a>
-						<a class="dropdown-item" href="#">Other</a>
-					</div>
-				</div>
-				<div class="col-sm-10">
-					<form class="">
-						<input id="searchText" class="form-control" type="text" placeholder="Search.." style="/* width: 85% */">
-					<!-- 	<button class="btn btn-success" type="submit">Search</button> -->
-					</form>
-				</div>
+				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#sortByTwoPosted">Task 3.2</button>&nbsp
+				<button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#findFavoritedUsers">Task 3.5</button>
 			</div><br>
+			<div id="sortByTwoPosted" class="collapse">
+   				<form method='post' action='Controller?action=sortByTwoPosted'>
+    				<div class='form-group'><input class='form-control' type='text' name='category1' placeholder='Enter Category'/></div>
+        			<div class='form-group'><input class='form-control' type='text' name='category2' placeholder='Enter Category'/></div>
+        			<input class='btn btn-light' type='submit'/>
+    			</form>
+  			</div>
+  			<div id="findFavoritedUsers" class="collapse">
+   				<form method='post' action='Controller?action=findFavoritedUsers'>
+    				<div class='input-group form-group'>
+    					<div class='input-group-prepend'>
+    						<span class="input-group-text">@</span>
+    					</div>
+    					<input class='form-control' type='text' name='userX' placeholder='Username'/>
+    				</div>
+    				<div class='input-group form-group'>
+    					<div class='input-group-prepend'>
+    						<span class="input-group-text">@</span>
+    					</div>
+    					<input class='form-control' type='text' name='userY' placeholder='Username'/>
+    				</div>
+    				<input class='btn btn-light' type='submit'/>
+    			</form>
+  			</div>
 			<!--End Search and Category-->
 			<div class="card-body">
 				<table class="table table-bordered table-hover">
@@ -176,10 +190,10 @@ ResultSet resultSet = null;
 						<c:forEach items="${userList}" var="user">
 							<tr>
 								<td width=95>
-									<i onClick="window.location.href=''" class="fa fa-thumbs-up"></i>
-									<i style="margin-left:10px;" onClick="window.location.href=''" class="fa fa-thumbs-down"></i>
+									<i onClick="window.location.href='Controller?action=addFaveUser&tempID=${user.userID}'" class="fa fa-thumbs-up"></i>
+									<i style="margin-left:10px;" onClick="window.location.href='Controller?action=removeFaveUser&tempID=${user.userID}'" class="fa fa-thumbs-down"></i>
 								</td>
-								<td><a href="userData.jsp?tempID=${user.userID }">${user.userID }</a></td>
+								<td><a href="userData.jsp?tempID=${user.userID }&firstName=${user.firstName}&lastName=${user.lastName}">${user.userID }</a></td>
 								<td>${user.firstName }</td>
 								<td>${user.lastName }</td>
 							</tr>

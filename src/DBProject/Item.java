@@ -8,8 +8,9 @@ public class Item {
 	protected String category;
 	protected String imageURL; //for storing images of the items
 	protected int seller;
+	protected String datePosted;
 	
-	public Item(int itemID, double price, String name, String description, String category, int seller) {
+	public Item(int itemID, double price, String name, String description, String category, int seller, String datePosted) {
 		super();
 		
 		this.itemID = itemID;
@@ -19,8 +20,17 @@ public class Item {
 		this.category = category;
 		/* this.imageURL = URL; */
 		this.seller = seller;
+		this.datePosted = datePosted;
 	}
 	
+	public String getDatePosted() {
+		return datePosted;
+	}
+
+	public void setDatePosted(String datePosted) {
+		this.datePosted = datePosted;
+	}
+
 	public int getSeller() {
 		return seller;
 	}
@@ -37,11 +47,12 @@ public class Item {
 		this.imageURL = imageURL;
 	}
 
-	public Item(String name, String description, String category, double price) {
+	public Item(String name, String description, String category, double price, int seller) {
 		this.price = price;
 		this.name = name;
 		this.description = description;
 		this.category = category;
+		this.seller = seller;
 		/* this.imageURL = URL; */
 	}
 	
